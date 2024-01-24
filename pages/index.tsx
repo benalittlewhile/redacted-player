@@ -7,7 +7,8 @@ import { useEffect, useState } from "react";
 
 const Home: NextPage = () => {
   const session = useSession();
-  const [isPaused, setIsPaused] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isDev, setIsDev] = useState(false);
   const [playBackInfo, setPlaybackInfo] =
     useState<PlaybackInfo>(DefaultPlaybackInfo);
 
@@ -38,6 +39,12 @@ const Home: NextPage = () => {
     return () => clearInterval(interval);
   }, [isPaused]);
 
+  useEffect(() => {
+    if (window.location.href.indexOf("localhost") !== -1) {
+      setIsDev(true);
+    }
+  });
+
   return (
     <div>
       <Head>
@@ -66,17 +73,19 @@ const Home: NextPage = () => {
               Sign in with Spotify
             </button>
           )}
-          <button
-            type="button"
-            onClick={() => {
-              setIsPaused((isPaused) => {
-                console.log("isPaused = ", !isPaused);
-                return !isPaused;
-              });
-            }}
-          >
-            toggle heartbeat
-          </button>
+          {isDev ? (
+            <button
+              type="button"
+              onClick={() => {
+                setIsPaused((isPaused) => {
+                  console.log("isPaused = ", !isPaused);
+                  return !isPaused;
+                });
+              }}
+            >
+              toggle heartbeat
+            </button>
+          ) : null}
         </p>
       </main>
     </div>
